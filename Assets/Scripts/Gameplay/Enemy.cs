@@ -57,6 +57,12 @@ namespace TowerDefenseDemo.Gameplay
         private void OnEnable()
         {
             EvaluatePosition(0f);
+            GameController.Instance.AliveEnemyCount++;
+        }
+
+        private void OnDisable()
+        {
+            GameController.Instance.AliveEnemyCount--;
         }
 
         private void Update()

@@ -10,5 +10,8 @@ namespace TowerDefenseDemo.Persistence
         public List<Vector2Int> enemyRoadSegments = new();
 
         public List<WaveInfo> waveInfos = new();
+        public GameObject emptyTile;
+        public GameObject spawnPointTile;
+        public GameObject HeadquartersTile;
     }
 }

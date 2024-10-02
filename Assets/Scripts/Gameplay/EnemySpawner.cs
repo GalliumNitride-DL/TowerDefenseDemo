@@ -42,8 +42,7 @@ namespace TowerDefenseDemo.Gameplay
                 for (int i = 0; i < sw.spawnCount; i++)
                 {
                     var ts = t + i * sw.spawnInterval;
-                    while (spawnList.ContainsKey(ts)) { ts += 0.01f; } // handle duplicate keys
-                    spawnList[ts] = sw.enemyPrefab;
+                    while (!spawnList.TryAdd(ts, sw.enemyPrefab)) { ts += 0.01f; } // handle duplicate keys
                 }
             }
             iter = spawnList.GetEnumerator();

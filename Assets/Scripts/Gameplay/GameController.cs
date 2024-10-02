@@ -13,7 +13,8 @@ namespace TowerDefenseDemo.Gameplay
         WaitingStart,
         Deploying,
         AFK,
-        GameOver,
+        LevelFailed,
+        LevelCompleted,
         Paused
     }
 
@@ -26,7 +27,8 @@ namespace TowerDefenseDemo.Gameplay
         public const float BlockLength = 10f;
 
         public LevelData CurrentLevelData;
-        public int currentWaveIndex { get; private set; } = 0;
+        public int CurrentWaveIndex { get; private set; } = 0;
+        public int AliveEnemyCount = 0;
 
         private void ChangeGameState(GameState newState)
         {
@@ -35,18 +37,33 @@ namespace TowerDefenseDemo.Gameplay
             StateChangeEvent.Invoke(newState);
         }
 
-        private void Start()
+        private async void Start()
         {
             EnemySpawner.Instance.InitializeSpawner(CurrentLevelData.waveInfos[0]);
-            currentWaveIndex = 0;
+            CurrentWaveIndex = 0;
+            AliveEnemyCount = 0;
+            await MapBuilder.BuildMap(CurrentLevelData);
+            ChangeGameState(GameState.AFK);
+            EnemySpawner.Instance.StartSpawn();
         }
 
         private void Update()
         {
-            
+            if (state == GameState.AFK) //Try to change game state
+            {
+                if (EnemySpawner.Instance.State == SpawnState.SpawnComplete && AliveEnemyCount == 0)
+                {
+                    if (CurrentWaveIndex == CurrentLevelData.waveInfos.Count)
+                    {
+                        ChangeGameState(GameState.LevelCompleted);
+                    }
+                    else
+                    {
+                        CurrentWaveIndex++;
+                        ChangeGameState(GameState.Deploying);
+                    }
+                }
+            }
         }
-
-
-
     }
 }
