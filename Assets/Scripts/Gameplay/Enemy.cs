@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace TowerDefenseDemo.Gameplay
 {
@@ -8,9 +10,11 @@ namespace TowerDefenseDemo.Gameplay
     {
         [Tooltip("Blocks per second")]
         public float speed;
-        public float hitPoints;
+        public int hitPoints;
         public float height;
+        public float reward;
         public DamageType immuneDamageType = DamageType.Decoy;
+        public UnityEvent<Enemy> OnDie = new();
 
         [HideInInspector] public int currentSegmentIndex;
         [HideInInspector] public float currentSegmentTime;
@@ -39,6 +43,16 @@ namespace TowerDefenseDemo.Gameplay
             transform.position = new(c.x * GameController.BlockLength, height, c.y * GameController.BlockLength);
         }
 
+        public void TakeDamage(int damage, DamageType damageType)
+        {
+            if (damageType == immuneDamageType || damageType == DamageType.Decoy) { return; }
+            hitPoints = Mathf.Max(0, hitPoints - damage);
+            if (hitPoints == 0)
+            {
+                OnDie.Invoke(this);
+            }
+        }
+
         private void OnEnable()
         {
             EvaluatePosition(0f);
@@ -46,7 +60,11 @@ namespace TowerDefenseDemo.Gameplay
 
         private void Update()
         {
-            EvaluatePosition(Time.deltaTime);
+            if (hitPoints > 0)
+            {
+                EvaluatePosition(Time.deltaTime);
+            }
+            
         }
     }
 }
