@@ -10,7 +10,7 @@ namespace TowerDefenseDemo.Gameplay
 {
     public enum GameState
     {
-        CountDown,
+        WaitingStart,
         AFK,
         Deploying,
         GameOver,
@@ -20,19 +20,26 @@ namespace TowerDefenseDemo.Gameplay
     public class GameController : SingletonBehaviour<GameController>
     {
         public GameState State => state;
-        private GameState state;
-        public UnityEvent<GameState> StateChangeEvent = new();
-        public LevelData CurrentLevelData;
+        private GameState state = GameState.WaitingStart;
+        [HideInInspector] public UnityEvent<GameState> StateChangeEvent = new();
 
         public const float BlockLength = 10f;
 
-
+        public LevelData CurrentLevelData;
+        public int currentWaveIndex { get; private set; } = 0;
 
         private void ChangeGameState(GameState newState)
         {
             if (newState == state) { return; }
             state = newState;
             StateChangeEvent.Invoke(newState);
+        }
+
+        private void Start()
+        {
+            EnemySpawner.Instance.InitializeSpawner(CurrentLevelData.waveInfos[0]);
+            ChangeGameState(GameState.AFK);
+            EnemySpawner.Instance.StartSpawn();
         }
 
     }

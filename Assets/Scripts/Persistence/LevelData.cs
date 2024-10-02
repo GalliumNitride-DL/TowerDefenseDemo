@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace TowerDefenseDemo.Persistence
 {
+    [CreateAssetMenu(menuName = "Persistences/LevelData")]
     public class LevelData : ScriptableObject
     {
         public List<Vector2Int> enemyRoadSegments = new();

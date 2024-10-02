@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace TowerDefenseDemo.Gameplay
 {
     public class Enemy : MonoBehaviour
@@ -13,39 +12,41 @@ namespace TowerDefenseDemo.Gameplay
         public float height;
         public DamageType immuneDamageType = DamageType.Decoy;
 
-        private int previousSegmentIndex = 0;
-        private float spawnedTime = 0;
+        [HideInInspector] public int currentSegmentIndex;
+        [HideInInspector] public float currentSegmentTime;
+
+        private void EvaluatePosition(float dt)
+        {
+            var segments = GameController.Instance.CurrentLevelData.enemyRoadSegments;
+            currentSegmentTime += dt;
+
+            var dx = currentSegmentIndex == segments.Count - 1 ? Vector2Int.zero : segments[currentSegmentIndex + 1] - segments[currentSegmentIndex];
+            var t = currentSegmentIndex == segments.Count - 1 ? 1f : Mathf.Abs((dx.x + dx.y)) / speed;
+
+            while (currentSegmentTime > t && currentSegmentIndex < segments.Count - 1)
+            {
+                currentSegmentTime -= t;
+                currentSegmentIndex++;
+                if (currentSegmentIndex < segments.Count - 1)
+                {
+                    dx = segments[currentSegmentIndex + 1] - segments[currentSegmentIndex];
+                    t = Mathf.Abs((dx.x + dx.y)) / speed;
+                }
+            }
+
+            var c = segments[currentSegmentIndex] + (Vector2)dx * (currentSegmentTime / t);
+
+            transform.position = new(c.x * GameController.BlockLength, height, c.y * GameController.BlockLength);
+        }
+
+        private void OnEnable()
+        {
+            EvaluatePosition(0f);
+        }
 
         private void Update()
         {
-            EvaluatePosition();
-        }
-
-        private void EvaluatePosition()
-        {
-            var currentTime = Time.time - spawnedTime;
-            var segments = GameController.Instance.CurrentLevelData.enemyRoadSegments;
-            var previousSegment = segments[previousSegmentIndex];
-            var previousSegmentsTime = (previousSegment.x + previousSegment.y) / speed;
-
-            var currentSegment = segments[previousSegmentIndex + 1];
-            var currentSegmentTime = (currentSegment.x + currentSegment.y) / speed;
-            
-            if (currentTime > currentSegmentTime && previousSegmentIndex < segments.Count - 1)
-            {
-                previousSegmentIndex++;
-                currentTime -= currentSegmentTime;
-
-                previousSegment = currentSegment;
-                currentSegment = segments[previousSegmentIndex + 1];
-
-                previousSegmentsTime = currentSegmentTime;
-                currentSegmentTime = (currentSegment.x + currentSegment.y) / speed;
-            }
-
-            var t = (currentTime - previousSegmentsTime) / (currentSegmentTime - previousSegmentsTime);
-            var l = Vector2.Lerp(previousSegment, currentSegment, t);
-            transform.position = new(l.x * GameController.BlockLength, l.y * GameController.BlockLength, height);
+            EvaluatePosition(Time.deltaTime);
         }
     }
 }

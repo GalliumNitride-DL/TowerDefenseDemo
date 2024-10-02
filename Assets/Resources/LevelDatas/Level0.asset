@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a0629ccfb0a58c478d29e2efe88bdf2, type: 3}
+  m_Name: Level0
+  m_EditorClassIdentifier: 
+  enemyRoadSegments:
+  - {x: 0, y: 0}
+  - {x: 5, y: 0}
+  - {x: 5, y: 10}
+  - {x: 3, y: 10}
+  - {x: 3, y: 12}
+  waveInfos:
+  - subWaves:
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 2
+      spawnCount: 5
+      spawnInterval: 1
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 10
+      spawnInterval: 2
