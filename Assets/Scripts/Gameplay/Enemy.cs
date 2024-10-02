@@ -50,6 +50,7 @@ namespace TowerDefenseDemo.Gameplay
             if (hitPoints == 0)
             {
                 OnDie.Invoke(this);
+                Destroy(gameObject, 0.1f);
             }
         }
 

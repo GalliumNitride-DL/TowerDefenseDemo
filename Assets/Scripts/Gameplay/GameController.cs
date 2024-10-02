@@ -11,8 +11,8 @@ namespace TowerDefenseDemo.Gameplay
     public enum GameState
     {
         WaitingStart,
-        AFK,
         Deploying,
+        AFK,
         GameOver,
         Paused
     }
@@ -38,9 +38,15 @@ namespace TowerDefenseDemo.Gameplay
         private void Start()
         {
             EnemySpawner.Instance.InitializeSpawner(CurrentLevelData.waveInfos[0]);
-            ChangeGameState(GameState.AFK);
-            EnemySpawner.Instance.StartSpawn();
+            currentWaveIndex = 0;
         }
+
+        private void Update()
+        {
+            
+        }
+
+
 
     }
 }

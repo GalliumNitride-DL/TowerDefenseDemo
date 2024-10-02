@@ -11,7 +11,6 @@ namespace TowerDefenseDemo.Gameplay
     {
         public int price = 100;
         public DamageType damageType = DamageType.Impact;
-        public float range;
         public float attackInterval;
         
         protected Enemy lockedEnemy = null;
@@ -36,6 +35,7 @@ namespace TowerDefenseDemo.Gameplay
             if (!e) { return; }
             e.OnDie.AddListener(OnEnemyDied);
             enemiesInRange.Add(e);
+            if (enemiesInRange.Count == 1) { Lock(); }
         }
 
         private void OnTriggerExit(Collider other)
@@ -62,8 +62,8 @@ namespace TowerDefenseDemo.Gameplay
 
             enemiesInRange.Sort((lhs, rhs) => 
             {
-                if (lhs.currentSegmentIndex != rhs.currentSegmentIndex) return lhs.currentSegmentIndex.CompareTo(rhs.currentSegmentIndex);
-                else return (lhs.currentSegmentTime * lhs.speed).CompareTo(rhs.currentSegmentTime * rhs.speed);
+                if (lhs.currentSegmentIndex != rhs.currentSegmentIndex) return -lhs.currentSegmentIndex.CompareTo(rhs.currentSegmentIndex);
+                else return -(lhs.currentSegmentTime * lhs.speed).CompareTo(rhs.currentSegmentTime * rhs.speed);
             });
             lockedEnemy = enemiesInRange[0];
         }
