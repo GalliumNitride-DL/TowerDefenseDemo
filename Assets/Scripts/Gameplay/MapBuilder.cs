@@ -18,7 +18,7 @@ namespace TowerDefenseDemo.Gameplay
     public static class MapBuilder
     {
         private const int MapLength = 20;
-        private const float AnimDuration = 1f;
+        private const float AnimDuration = 1.5f;
         private static bool[,] isRoadFlag;
         private static Dictionary<Vector2Int, DefenseTowerBase> towers = new();
 
@@ -64,7 +64,7 @@ namespace TowerDefenseDemo.Gameplay
 
         public static bool IsTowerOccupiedAt(Vector2Int c) => towers.ContainsKey(c);
 
-        public static DefenseTowerBase GetTowerAt(Vector2Int c) => towers[c];
+        public static DefenseTowerBase GetTowerAt(Vector2Int c) => towers.TryGetValue(c, out var tower) ? tower : null;
 
         public static bool TryDeployTowerAt(GameObject towerObject, Vector2Int c)
         {
@@ -72,6 +72,7 @@ namespace TowerDefenseDemo.Gameplay
             var tower = towerObject.GetComponent<DefenseTowerBase>();
             if (!tower) return false;
             towers[c] = tower;
+            tower.OnDeploy();
             return true;
         }
 

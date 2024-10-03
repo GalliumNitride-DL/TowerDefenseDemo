@@ -1,3 +1,5 @@
+using DG.Tweening;
+
 using System.Collections;
 using System.Collections.Generic;
 
@@ -10,15 +12,25 @@ namespace TowerDefenseDemo.Gameplay
     public abstract class DefenseTowerBase : MonoBehaviour
     {
         public int price = 100;
-        public DamageType damageType = DamageType.Impact;
-        public float attackInterval;
+        [SerializeField] protected DamageType damageType = DamageType.Impact;
+        [SerializeField] private float attackInterval;
+        [SerializeField] private GameObject rangeIndicator;
+        [SerializeField] private float animDuration = 0.5f;
+
+        public float range // WTF?
+        {
+            get => capsuleCollider.radius;
+            set => capsuleCollider.radius = value;
+        }
         
         protected Enemy lockedEnemy = null;
         private List<Enemy> enemiesInRange = new();
-        private float elapsedTime;
+        private float elapsedTime; // For attack periods
+        private CapsuleCollider capsuleCollider;
 
         protected virtual void OnEnable()
         {
+            capsuleCollider = GetComponent<CapsuleCollider>();
             GameController.Instance.StateChangeEvent.AddListener(OnGameStateChange);
         }
 
@@ -97,19 +109,21 @@ namespace TowerDefenseDemo.Gameplay
             }
         }
 
-        protected virtual void OnTowerSelected()
+        public virtual void OnTowerSelected()
         {
-
+            rangeIndicator.transform.DOKill(true);
+            rangeIndicator.SetActive(true);
+            rangeIndicator.transform.DOScale(new Vector3(range * 2f, 0.1f, range * 2f), animDuration).SetEase(Ease.OutBounce);
         }
 
-        protected virtual void OnTowerDeselected()
+        public virtual void OnTowerDeselected()
         {
-
+            rangeIndicator.transform.DOScale(Vector3.zero, animDuration).SetEase(Ease.InBounce).OnComplete(() => rangeIndicator.SetActive(false));
         }
 
-        protected virtual void OnDeploy()
+        public virtual void OnDeploy()
         {
-
+            rangeIndicator.transform.DOScale(Vector3.zero, animDuration).SetEase(Ease.InBounce).OnComplete(() => rangeIndicator.SetActive(false));
         }
     }
 }

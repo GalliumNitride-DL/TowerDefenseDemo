@@ -43,7 +43,6 @@ namespace TowerDefenseDemo.Gameplay
             }
             if (enemy && t >= bulletFlyTime)
             {
-                Debug.Log("DMG DEALT");
                 enemy.TakeDamage(bulletDamage, damageType);
             }
             bullet.SetActive(false);
