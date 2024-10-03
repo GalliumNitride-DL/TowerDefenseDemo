@@ -44,21 +44,13 @@ namespace TowerDefenseDemo.Gameplay
                         var tile = levelData.emptyTile;
                         var p = new Vector3(i * GameController.BlockLength, tile.transform.localScale.y / 2, j * GameController.BlockLength);
                         var tileObject = GameObject.Instantiate(tile, p, Quaternion.identity, parent);
-                        DoAnimation(tileObject, tile.transform.localScale.y);
                     }
                 }
             }
 
-            await UniTask.Delay(TimeSpan.FromSeconds(AnimDuration), ignoreTimeScale: false);
+            parent.localScale = new(1f, 0f, 1f);
+            await parent.DOScaleY(1f, AnimDuration).AsyncWaitForCompletion();
         }
 
-        private static void DoAnimation(GameObject tile, float height)
-        {
-            var s = tile.transform.localScale;
-            s.y = 0;
-            tile.transform.localScale = s;
-
-            tile.transform.DOScaleY(height, AnimDuration);
-        }
     }
 }
