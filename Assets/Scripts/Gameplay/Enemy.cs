@@ -12,7 +12,7 @@ namespace TowerDefenseDemo.Gameplay
         public float speed;
         public int hitPoints;
         public float height;
-        public float reward;
+        public int reward;
         public DamageType immuneDamageType = DamageType.Decoy;
         public UnityEvent<Enemy> OnDie = new();
 
@@ -21,7 +21,7 @@ namespace TowerDefenseDemo.Gameplay
 
         private void EvaluatePosition(float dt)
         {
-            var segments = GameController.Instance.CurrentLevelData.enemyRoadSegments;
+            var segments = GameController.Instance.currentLevelData.enemyRoadSegments;
             currentSegmentTime += dt;
 
             var dx = currentSegmentIndex == segments.Count - 1 ? Vector2Int.zero : segments[currentSegmentIndex + 1] - segments[currentSegmentIndex];
@@ -40,7 +40,7 @@ namespace TowerDefenseDemo.Gameplay
 
             var c = segments[currentSegmentIndex] + (Vector2)dx * (currentSegmentTime / t);
 
-            transform.position = new(c.x * GameController.BlockLength, height, c.y * GameController.BlockLength);
+            transform.position = new(c.x * GlobalData.BlockLength, height, c.y * GlobalData.BlockLength);
         }
 
         public void TakeDamage(int damage, DamageType damageType)
@@ -57,12 +57,13 @@ namespace TowerDefenseDemo.Gameplay
         private void OnEnable()
         {
             EvaluatePosition(0f);
-            GameController.Instance.AliveEnemyCount++;
+            GlobalData.AliveEnemyCount++;
         }
 
         private void OnDisable()
         {
-            GameController.Instance.AliveEnemyCount--;
+            GlobalData.AliveEnemyCount--;
+            GlobalData.Money += reward;
         }
 
         private void Update()
@@ -71,7 +72,17 @@ namespace TowerDefenseDemo.Gameplay
             {
                 EvaluatePosition(Time.deltaTime);
             }
-            
+        }
+
+        private void OnGameStateChange(GameState newState)
+        {
+            switch (newState)
+            {
+                case GameState.LevelFailed:
+                case GameState.LevelCompleted:
+                    OnDie.RemoveAllListeners();
+                    break;
+            }
         }
     }
 }

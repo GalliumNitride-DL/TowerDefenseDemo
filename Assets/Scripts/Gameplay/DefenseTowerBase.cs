@@ -17,22 +17,25 @@ namespace TowerDefenseDemo.Gameplay
         private List<Enemy> enemiesInRange = new();
         private float elapsedTime;
 
+        protected virtual void OnEnable()
+        {
+            GameController.Instance.StateChangeEvent.AddListener(OnGameStateChange);
+        }
+
         protected virtual void Update()
         {
             elapsedTime += Time.deltaTime;
-            if (lockedEnemy != null && elapsedTime >= attackInterval)
+            if (GameController.Instance.State == GameState.AFK && lockedEnemy != null && elapsedTime >= attackInterval)
             {
                 Attack();
                 elapsedTime = 0f;
             }
         }
 
-        protected abstract void Attack();
-
         private void OnTriggerEnter(Collider other)
         {
             var e = other.GetComponent<Enemy>();
-            if (!e) { return; }
+            if (!e || GameController.Instance.State != GameState.AFK) { return; }
             e.OnDie.AddListener(OnEnemyDied);
             enemiesInRange.Add(e);
             if (enemiesInRange.Count == 1) { Lock(); }
@@ -46,6 +49,13 @@ namespace TowerDefenseDemo.Gameplay
             enemiesInRange.Remove(e);
             if (e == lockedEnemy) { Lock(); }
         }
+
+        protected virtual void OnDisable()
+        {
+            GameController.Instance.StateChangeEvent.RemoveListener(OnGameStateChange);
+        }
+
+        protected abstract void Attack();
 
         private void Lock()
         {
@@ -72,6 +82,34 @@ namespace TowerDefenseDemo.Gameplay
         {
             enemiesInRange.Remove(enemy);
             if (enemy == lockedEnemy) { Lock(); }
+        }
+
+        private void OnGameStateChange(GameState newState)
+        {
+            switch (newState)
+            {
+                case GameState.Deploying:
+                case GameState.LevelFailed:
+                case GameState.LevelCompleted:
+                    enemiesInRange.Clear();
+                    lockedEnemy = null;
+                    break;
+            }
+        }
+
+        protected virtual void OnTowerSelected()
+        {
+
+        }
+
+        protected virtual void OnTowerDeselected()
+        {
+
+        }
+
+        protected virtual void OnDeploy()
+        {
+
         }
     }
 }

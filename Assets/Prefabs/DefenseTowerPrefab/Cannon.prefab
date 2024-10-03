@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8004478805617971772}
   - component: {fileID: 6515700056487100278}
   - component: {fileID: 6530929160276543289}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,7 +80,7 @@ GameObject:
   - component: {fileID: 1134758043658748899}
   - component: {fileID: 7024336258550573369}
   - component: {fileID: 2721809689741656893}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 5227841872773590174}
   - component: {fileID: 6825758588606187566}
   - component: {fileID: 4354914021739063797}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 6998642754341271507}
   - component: {fileID: 5992358054812428119}
   - component: {fileID: 1836083323788023287}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Bull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -489,7 +489,7 @@ GameObject:
   - component: {fileID: 7801391712395510921}
   - component: {fileID: 1739042431035768154}
   - component: {fileID: 4853824478962490827}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

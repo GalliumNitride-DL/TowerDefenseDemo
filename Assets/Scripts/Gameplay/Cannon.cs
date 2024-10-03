@@ -23,7 +23,7 @@ namespace TowerDefenseDemo.Gameplay
             await LaunchBullet();
         }
 
-        private void OnEnable()
+        private void Start()
         {
             bulletOriginalPos = bullet.transform.localPosition;
         }

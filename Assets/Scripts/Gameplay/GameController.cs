@@ -18,17 +18,17 @@ namespace TowerDefenseDemo.Gameplay
         Paused
     }
 
+    /// <summary>
+    /// GameController handles everything related to game state transitions
+    /// </summary>
     public class GameController : SingletonBehaviour<GameController>
     {
         public GameState State => state;
         private GameState state = GameState.WaitingStart;
         [HideInInspector] public UnityEvent<GameState> StateChangeEvent = new();
 
-        public const float BlockLength = 10f;
-
-        public LevelData CurrentLevelData;
-        public int CurrentWaveIndex { get; private set; } = 0;
-        public int AliveEnemyCount = 0;
+        public LevelData currentLevelData;
+        public int currentWaveIndex { get; private set; } = 0;
 
         private void ChangeGameState(GameState newState)
         {
@@ -39,27 +39,27 @@ namespace TowerDefenseDemo.Gameplay
 
         private async void Start()
         {
-            EnemySpawner.Instance.InitializeSpawner(CurrentLevelData.waveInfos[0]);
-            CurrentWaveIndex = 0;
-            AliveEnemyCount = 0;
-            await MapBuilder.BuildMap(CurrentLevelData);
-            ChangeGameState(GameState.AFK);
-            EnemySpawner.Instance.StartSpawn();
+            GlobalData.CurrentLevelData = currentLevelData;
+            EnemySpawner.Instance.InitializeSpawner(GlobalData.CurrentLevelData.waveInfos[0]);
+            currentWaveIndex = 0;
+            GlobalData.AliveEnemyCount = 0;
+            await MapBuilder.BuildMap(GlobalData.CurrentLevelData);
+            ChangeGameState(GameState.Deploying);
         }
 
         private void Update()
         {
             if (state == GameState.AFK) //Try to change game state
             {
-                if (EnemySpawner.Instance.State == SpawnState.SpawnComplete && AliveEnemyCount == 0)
+                if (EnemySpawner.Instance.State == SpawnState.SpawnComplete && GlobalData.AliveEnemyCount == 0)
                 {
-                    if (CurrentWaveIndex == CurrentLevelData.waveInfos.Count)
+                    if (currentWaveIndex == GlobalData.CurrentLevelData.waveInfos.Count)
                     {
                         ChangeGameState(GameState.LevelCompleted);
                     }
                     else
                     {
-                        CurrentWaveIndex++;
+                        currentWaveIndex++;
                         ChangeGameState(GameState.Deploying);
                     }
                 }

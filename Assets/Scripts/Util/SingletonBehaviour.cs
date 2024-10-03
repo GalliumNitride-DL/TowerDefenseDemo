@@ -6,17 +6,7 @@ namespace TowerDefenseDemo
     public abstract class SingletonBehaviour<T> : MonoBehaviour where T : SingletonBehaviour<T>
     {
         private static T instance;
-        public static T Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new GameObject(typeof(T).Name).AddComponent<T>();
-                }
-                return instance;
-            }
-        }
+        public static T Instance => instance;
 
         protected virtual void Awake()
         {

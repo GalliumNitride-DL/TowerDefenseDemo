@@ -11,14 +11,22 @@ using UnityEngine;
 
 namespace TowerDefenseDemo.Gameplay
 {
+
+    /// <summary>
+    /// MapBuilder maintains each tile and defense tower on the map
+    /// </summary>
     public static class MapBuilder
     {
         private const int MapLength = 20;
         private const float AnimDuration = 1f;
-        public static bool[,] isRoadFlag = new bool[MapLength, MapLength];
+        private static bool[,] isRoadFlag;
+        private static Dictionary<Vector2Int, DefenseTowerBase> towers = new();
 
         public static async UniTask BuildMap(LevelData levelData) // Determine if it's road or empty, and instantiate tiles
         {
+            isRoadFlag = new bool[MapLength, MapLength];
+            towers.Clear();
+
             var segments = levelData.enemyRoadSegments;
             for (int i = 0; i < segments.Count - 1; i++)
             {
@@ -42,7 +50,7 @@ namespace TowerDefenseDemo.Gameplay
                     if (!isRoadFlag[i, j])
                     {
                         var tile = levelData.emptyTile;
-                        var p = new Vector3(i * GameController.BlockLength, tile.transform.localScale.y / 2, j * GameController.BlockLength);
+                        var p = new Vector3(i * GlobalData.BlockLength, tile.transform.localScale.y / 2, j * GlobalData.BlockLength);
                         var tileObject = GameObject.Instantiate(tile, p, Quaternion.identity, parent);
                     }
                 }
@@ -50,6 +58,21 @@ namespace TowerDefenseDemo.Gameplay
 
             parent.localScale = new(1f, 0f, 1f);
             await parent.DOScaleY(1f, AnimDuration).AsyncWaitForCompletion();
+        }
+
+        public static bool CanDeployTowerAt(Vector2Int c) => c.x < MapLength && c.y < MapLength && !isRoadFlag[c.x, c.y] && !towers.ContainsKey(c);
+
+        public static bool IsTowerOccupiedAt(Vector2Int c) => towers.ContainsKey(c);
+
+        public static DefenseTowerBase GetTowerAt(Vector2Int c) => towers[c];
+
+        public static bool TryDeployTowerAt(GameObject towerObject, Vector2Int c)
+        {
+            if (!CanDeployTowerAt(c)) return false;
+            var tower = towerObject.GetComponent<DefenseTowerBase>();
+            if (!tower) return false;
+            towers[c] = tower;
+            return true;
         }
 
     }
