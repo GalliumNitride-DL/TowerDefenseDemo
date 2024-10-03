@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using TowerDefenseDemo.UI;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,8 +15,8 @@ namespace TowerDefenseDemo.Gameplay
     /// </summary>
     public class DeployController : SingletonBehaviour<DeployController>
     {
-        public bool isDeploying { get; private set; } = false;
-        public bool isSelected { get; private set; } = false;
+        public bool isDeploying => GameplayUITracker.GetCurrentStatus() == UIOperationStatus.DeployTower;
+        public bool isSelected => GameplayUITracker.GetCurrentStatus() == UIOperationStatus.SelectTower;
         private GameObject currentlyDeployingPrefab;
         private DefenseTowerBase currentlySelectedTower;
 
@@ -22,30 +24,28 @@ namespace TowerDefenseDemo.Gameplay
 
         private const int RaycastLayerMask = ~0 ^ (1 << 2); // Ignore Layer 2, which is "Ignore Raycast"
 
-        
-
 #region UI Events
         public void TryUpdateDeployStatus(GameObject towerPrefab)
         {
             if (GameController.Instance.State != GameState.Deploying) { return; }
             if (isDeploying && currentlyDeployingPrefab == towerPrefab)
             {
-                isDeploying = false;
                 Destroy(currentlyDeployingPrefab);
                 currentlyDeployingPrefab = null;
+                GameplayUITracker.BackToPreviousStatus();
                 return;
             }
 
             // TODO: Add Money Detection
 
-            if (!isDeploying && !isSelected)
+            if (GameplayUITracker.GetCurrentStatus() == UIOperationStatus.DeployIdle)
             {
-                isDeploying = true;
+                GameplayUITracker.PushStatus(UIOperationStatus.DeployTower);
                 currentlyDeployingPrefab = Instantiate(towerPrefab);
                 return;
             }
 
-            if (isSelected)
+            if (GameplayUITracker.GetCurrentStatus() == UIOperationStatus.SelectTower)
             {
                 DeselectCurrentTower();
                 return;
@@ -64,18 +64,17 @@ namespace TowerDefenseDemo.Gameplay
 
         private void SelectTower(DefenseTowerBase tower)
         {
-            if (isSelected == true) { return; }
-            isSelected = true;
+            if (GameplayUITracker.GetCurrentStatus() != UIOperationStatus.DeployIdle) { return; }
+            GameplayUITracker.PushStatus(UIOperationStatus.SelectTower);
             currentlySelectedTower = tower;
             currentlySelectedTower.OnTowerSelected();
         }
 
         private void DeselectCurrentTower()
         {
-            if (isSelected == false) { return; }
+            if (!GameplayUITracker.PopStatusIfEqual(UIOperationStatus.SelectTower)) { return; }
             currentlySelectedTower.OnTowerDeselected();
             currentlySelectedTower = null;
-            isSelected = false;
         }
 
         private void Update()
@@ -93,7 +92,7 @@ namespace TowerDefenseDemo.Gameplay
                 {
                     if (MapBuilder.TryDeployTowerAt(currentlyDeployingPrefab, c))
                     {
-                        isDeploying = false;
+                        GameplayUITracker.BackToPreviousStatus();
                         currentlyDeployingPrefab = null;
                     }
                 }
@@ -118,7 +117,5 @@ namespace TowerDefenseDemo.Gameplay
                 Debug.Log(isSelected);
             }
         }
-
-
     }
 }

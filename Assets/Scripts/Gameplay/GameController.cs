@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using TowerDefenseDemo.Persistence;
+using TowerDefenseDemo.UI;
 
 using UnityEngine;
 using UnityEngine.Events;
@@ -40,11 +41,14 @@ namespace TowerDefenseDemo.Gameplay
         private async void Start()
         {
             GlobalData.CurrentLevelData = currentLevelData;
+            GameplayUITracker.ClearHistory();
+
             EnemySpawner.Instance.InitializeSpawner(GlobalData.CurrentLevelData.waveInfos[0]);
             currentWaveIndex = 0;
             GlobalData.AliveEnemyCount = 0;
             await MapBuilder.BuildMap(GlobalData.CurrentLevelData);
             ChangeGameState(GameState.Deploying);
+            GameplayUITracker.PushStatus(UIOperationStatus.DeployIdle);
         }
 
         private void Update()
@@ -61,6 +65,7 @@ namespace TowerDefenseDemo.Gameplay
                     {
                         currentWaveIndex++;
                         ChangeGameState(GameState.Deploying);
+                        GameplayUITracker.PushStatus(UIOperationStatus.DeployIdle);
                     }
                 }
             }
