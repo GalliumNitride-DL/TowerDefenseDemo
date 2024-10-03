@@ -28,6 +28,7 @@ MonoBehaviour:
       spawnDelay: 1
       spawnCount: 50
       spawnInterval: 0.5
+  startMoney: 10000
   emptyTile: {fileID: 4449136731150680589, guid: 70ca78efcda817b4185df3f65ae2eeda, type: 3}
   spawnPointTile: {fileID: 0}
   HeadquartersTile: {fileID: 0}

@@ -1,5 +1,9 @@
+using DG.Tweening;
+
 using System;
 using System.Collections.Generic;
+
+using TMPro;
 
 using TowerDefenseDemo.UI;
 
@@ -15,11 +19,15 @@ namespace TowerDefenseDemo.Gameplay
     /// </summary>
     public class DeployController : SingletonBehaviour<DeployController>
     {
-        public bool isDeploying => GameplayUITracker.GetCurrentStatus() == UIOperationStatus.DeployTower;
-        public bool isSelected => GameplayUITracker.GetCurrentStatus() == UIOperationStatus.SelectTower;
+        private UIOperationStatus UIStatus => GameplayUITracker.GetCurrentStatus();
         private GameObject currentlyDeployingPrefab;
         private DefenseTowerBase currentlySelectedTower;
 
+        [SerializeField] private RectTransform detailPanel;
+        [SerializeField] private TextMeshProUGUI rangeText;
+        [SerializeField] private TextMeshProUGUI DPSText;
+        [SerializeField] private TextMeshProUGUI sellButtonText;
+        [SerializeField] private float animDuration;
         [SerializeField] private float towerHeight;
 
         private const int RaycastLayerMask = ~0 ^ (1 << 2); // Ignore Layer 2, which is "Ignore Raycast"
@@ -28,7 +36,7 @@ namespace TowerDefenseDemo.Gameplay
         public void TryUpdateDeployStatus(GameObject towerPrefab)
         {
             if (GameController.Instance.State != GameState.Deploying) { return; }
-            if (isDeploying && currentlyDeployingPrefab == towerPrefab)
+            if (UIStatus == UIOperationStatus.DeployTower && currentlyDeployingPrefab == towerPrefab)
             {
                 Destroy(currentlyDeployingPrefab);
                 currentlyDeployingPrefab = null;
@@ -36,19 +44,30 @@ namespace TowerDefenseDemo.Gameplay
                 return;
             }
 
-            // TODO: Add Money Detection
-
-            if (GameplayUITracker.GetCurrentStatus() == UIOperationStatus.DeployIdle)
+            if (UIStatus == UIOperationStatus.DeployIdle)
             {
                 GameplayUITracker.PushStatus(UIOperationStatus.DeployTower);
                 currentlyDeployingPrefab = Instantiate(towerPrefab);
                 return;
             }
+        }
 
-            if (GameplayUITracker.GetCurrentStatus() == UIOperationStatus.SelectTower)
+        public void Sell()
+        {
+            if (UIStatus == UIOperationStatus.SelectTower)
             {
-                DeselectCurrentTower();
-                return;
+                sellButtonText.text = "CONFIRM?";
+                GameplayUITracker.PushStatus(UIOperationStatus.ConfirmSell);
+            }
+            else if (UIStatus == UIOperationStatus.ConfirmSell)
+            {
+                var tower = currentlySelectedTower.price;
+                GlobalData.Money += currentlySelectedTower.price / 2;
+                var t = currentlySelectedTower.transform.position;
+                var c = new Vector2Int(Mathf.RoundToInt(t.x / 10f), Mathf.RoundToInt(t.z / 10f));
+                MapBuilder.RemoveTowerAt(c);
+                GameplayUITracker.BackToPreviousStatus();
+                DeselectCurrentTower(true);
             }
         }
 #endregion
@@ -68,20 +87,43 @@ namespace TowerDefenseDemo.Gameplay
             GameplayUITracker.PushStatus(UIOperationStatus.SelectTower);
             currentlySelectedTower = tower;
             currentlySelectedTower.OnTowerSelected();
+            InitPanel();
         }
 
-        private void DeselectCurrentTower()
+        private void DeselectCurrentTower(bool destroy = false)
         {
             if (!GameplayUITracker.PopStatusIfEqual(UIOperationStatus.SelectTower)) { return; }
             currentlySelectedTower.OnTowerDeselected();
+            if (destroy)
+            {
+                Destroy(currentlySelectedTower.gameObject);
+            }
             currentlySelectedTower = null;
+            detailPanel.DOAnchorPos3DY(-detailPanel.rect.height, animDuration);
+        }
+
+        private void InitPanel()
+        {
+            if (UIStatus != UIOperationStatus.SelectTower) { return; }
+
+            rangeText.text = currentlySelectedTower.range.ToString();
+            DPSText.text = currentlySelectedTower.GetDPS().ToString();
+            sellButtonText.text = $"Sell for ${currentlySelectedTower.price / 2}";
+            detailPanel.anchoredPosition3D = new(0f, -detailPanel.rect.height, 0f);
+            detailPanel.DOAnchorPos3DY(0f, animDuration);
+        }
+
+        private void DeconfirmSell()
+        {
+            if (!GameplayUITracker.PopStatusIfEqual(UIOperationStatus.ConfirmSell)) { return; }
+            sellButtonText.text = $"Sell for ${currentlySelectedTower.price / 2}";
         }
 
         private void Update()
         {
             if (GameController.Instance.State != GameState.Deploying) { return; }
             var mousePressed = Input.GetMouseButtonDown(0);
-            if (isDeploying)
+            if (UIStatus == UIOperationStatus.DeployTower)
             {
                 var c = RaycastFromCamera();
                 var previewCoord = new Vector3(c.x * GlobalData.BlockLength, towerHeight, c.y * GlobalData.BlockLength);
@@ -90,8 +132,11 @@ namespace TowerDefenseDemo.Gameplay
 
                 if (mousePressed)
                 {
-                    if (MapBuilder.TryDeployTowerAt(currentlyDeployingPrefab, c))
+                    var tower = currentlyDeployingPrefab.GetComponent<DefenseTowerBase>();
+                    
+                    if (GlobalData.Money >= tower.price && MapBuilder.TryDeployTowerAt(tower, c))
                     {
+                        GlobalData.Money -= tower.price;
                         GameplayUITracker.BackToPreviousStatus();
                         currentlyDeployingPrefab = null;
                     }
@@ -99,11 +144,11 @@ namespace TowerDefenseDemo.Gameplay
             }
             else if (mousePressed && !EventSystem.current.IsPointerOverGameObject())
             {
-                if (isSelected)
+                if (UIStatus == UIOperationStatus.SelectTower)
                 {
                     DeselectCurrentTower();
                 }
-                else
+                else if (UIStatus == UIOperationStatus.DeployIdle)
                 {
                     var c = RaycastFromCamera();
                     var tower = MapBuilder.GetTowerAt(c);
@@ -114,7 +159,10 @@ namespace TowerDefenseDemo.Gameplay
                         // Todo: UI
                     }
                 }
-                Debug.Log(isSelected);
+                else if (UIStatus == UIOperationStatus.ConfirmSell)
+                {
+                    DeconfirmSell();
+                }
             }
         }
     }

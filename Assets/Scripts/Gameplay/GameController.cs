@@ -41,6 +41,7 @@ namespace TowerDefenseDemo.Gameplay
         private async void Start()
         {
             GlobalData.CurrentLevelData = currentLevelData;
+            GlobalData.Money = currentLevelData.startMoney;
             GameplayUITracker.ClearHistory();
 
             EnemySpawner.Instance.InitializeSpawner(GlobalData.CurrentLevelData.waveInfos[0]);
@@ -69,6 +70,7 @@ namespace TowerDefenseDemo.Gameplay
                     }
                 }
             }
+            Debug.Log(GlobalData.Money);
         }
     }
 }

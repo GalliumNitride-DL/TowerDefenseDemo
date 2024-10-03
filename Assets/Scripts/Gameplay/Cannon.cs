@@ -23,6 +23,8 @@ namespace TowerDefenseDemo.Gameplay
             await LaunchBullet();
         }
 
+        public override float GetDPS() => bulletDamage / attackInterval;
+
         private void Start()
         {
             bulletOriginalPos = bullet.transform.localPosition;

@@ -6,6 +6,7 @@ namespace TowerDefenseDemo.UI
 {
     public enum UIOperationStatus
     {
+        None,
         DeployIdle,
         DeployTower,
         SelectTower,
@@ -22,10 +23,10 @@ namespace TowerDefenseDemo.UI
 
         public static void PushStatus(UIOperationStatus status) => UIOperations.Push(status);
 
-        public static UIOperationStatus GetCurrentStatus() => UIOperations.Peek();
+        public static UIOperationStatus GetCurrentStatus() => UIOperations.TryPeek(out var status) ? status : UIOperationStatus.None;
         
         public static UIOperationStatus BackToPreviousStatus() => UIOperations.Pop();
-        
+
         public static bool PopStatusIfEqual(UIOperationStatus status)
         {
             if (UIOperations.Peek() == status)

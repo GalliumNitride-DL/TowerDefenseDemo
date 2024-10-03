@@ -66,11 +66,11 @@ namespace TowerDefenseDemo.Gameplay
 
         public static DefenseTowerBase GetTowerAt(Vector2Int c) => towers.TryGetValue(c, out var tower) ? tower : null;
 
-        public static bool TryDeployTowerAt(GameObject towerObject, Vector2Int c)
+        public static bool RemoveTowerAt(Vector2Int c) => towers.Remove(c);
+
+        public static bool TryDeployTowerAt(DefenseTowerBase tower, Vector2Int c)
         {
             if (!CanDeployTowerAt(c)) return false;
-            var tower = towerObject.GetComponent<DefenseTowerBase>();
-            if (!tower) return false;
             towers[c] = tower;
             tower.OnDeploy();
             return true;

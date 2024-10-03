@@ -13,7 +13,7 @@ namespace TowerDefenseDemo.Gameplay
     {
         public int price = 100;
         [SerializeField] protected DamageType damageType = DamageType.Impact;
-        [SerializeField] private float attackInterval;
+        [SerializeField] protected float attackInterval;
         [SerializeField] private GameObject rangeIndicator;
         [SerializeField] private float animDuration = 0.5f;
 
@@ -68,6 +68,8 @@ namespace TowerDefenseDemo.Gameplay
         }
 
         protected abstract void Attack();
+
+        public abstract float GetDPS();
 
         private void Lock()
         {
