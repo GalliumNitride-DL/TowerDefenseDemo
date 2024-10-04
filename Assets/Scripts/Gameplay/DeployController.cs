@@ -99,7 +99,6 @@ namespace TowerDefenseDemo.Gameplay
                 Destroy(currentlySelectedTower.gameObject);
             }
             currentlySelectedTower = null;
-            detailPanel.DOAnchorPos3DY(-detailPanel.rect.height, animDuration);
         }
 
         private void InitPanel()
@@ -109,8 +108,6 @@ namespace TowerDefenseDemo.Gameplay
             rangeText.text = currentlySelectedTower.range.ToString();
             DPSText.text = currentlySelectedTower.GetDPS().ToString();
             sellButtonText.text = $"Sell for ${currentlySelectedTower.price / 2}";
-            detailPanel.anchoredPosition3D = new(0f, -detailPanel.rect.height, 0f);
-            detailPanel.DOAnchorPos3DY(0f, animDuration);
         }
 
         private void DeconfirmSell()

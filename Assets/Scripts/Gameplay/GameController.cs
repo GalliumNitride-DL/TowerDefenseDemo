@@ -38,13 +38,22 @@ namespace TowerDefenseDemo.Gameplay
             StateChangeEvent.Invoke(newState);
         }
 
-        private async void Start()
+        public void EnterNextWave()
         {
+            if (state != GameState.Deploying || GameplayUITracker.GetCurrentStatus() != UIOperationStatus.DeployIdle) { return; }
+            ChangeGameState(GameState.AFK);
+            GameplayUITracker.BackToPreviousStatus();
+            EnemySpawner.Instance.InitializeSpawner(GlobalData.CurrentLevelData.waveInfos[currentWaveIndex]);
+            EnemySpawner.Instance.StartSpawn();
+        }
+
+        protected async override void Awake()
+        {
+            base.Awake();
             GlobalData.CurrentLevelData = currentLevelData;
             GlobalData.Money = currentLevelData.startMoney;
             GameplayUITracker.ClearHistory();
-
-            EnemySpawner.Instance.InitializeSpawner(GlobalData.CurrentLevelData.waveInfos[0]);
+            
             currentWaveIndex = 0;
             GlobalData.AliveEnemyCount = 0;
             await MapBuilder.BuildMap(GlobalData.CurrentLevelData);
@@ -58,7 +67,7 @@ namespace TowerDefenseDemo.Gameplay
             {
                 if (EnemySpawner.Instance.State == SpawnState.SpawnComplete && GlobalData.AliveEnemyCount == 0)
                 {
-                    if (currentWaveIndex == GlobalData.CurrentLevelData.waveInfos.Count)
+                    if (currentWaveIndex == GlobalData.CurrentLevelData.waveInfos.Count - 1)
                     {
                         ChangeGameState(GameState.LevelCompleted);
                     }
@@ -71,6 +80,12 @@ namespace TowerDefenseDemo.Gameplay
                 }
             }
             Debug.Log(GlobalData.Money);
+        }
+
+        private void OnDestroy()
+        {
+            GlobalData.CurrentLevelData = null;
+            GameplayUITracker.ClearHistory();
         }
     }
 }

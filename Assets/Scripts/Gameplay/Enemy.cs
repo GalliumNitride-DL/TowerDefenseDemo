@@ -68,7 +68,7 @@ namespace TowerDefenseDemo.Gameplay
 
         private void Update()
         {
-            if (hitPoints > 0)
+            if (hitPoints > 0 && GameController.Instance.State == GameState.AFK)
             {
                 EvaluatePosition(Time.deltaTime);
             }

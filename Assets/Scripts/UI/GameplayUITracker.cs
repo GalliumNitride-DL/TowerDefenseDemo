@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Events;
 
 namespace TowerDefenseDemo.UI
 {
@@ -18,20 +18,36 @@ namespace TowerDefenseDemo.UI
     public static class GameplayUITracker
     {
         private static Stack<UIOperationStatus> UIOperations = new();
+        public static UnityEvent<UIOperationStatus, UIOperationStatus> UIStatusChangeEvent = new();
 
-        public static void ClearHistory() => UIOperations.Clear();
+        public static void ClearHistory()
+        {
+            UIOperations.Clear();
+            UIStatusChangeEvent.RemoveAllListeners();
+        }
 
-        public static void PushStatus(UIOperationStatus status) => UIOperations.Push(status);
+        public static void PushStatus(UIOperationStatus status)
+        {
+            var oldStatus = GetCurrentStatus();
+            UIOperations.Push(status);
+            UIStatusChangeEvent.Invoke(oldStatus, status);
+        }
 
         public static UIOperationStatus GetCurrentStatus() => UIOperations.TryPeek(out var status) ? status : UIOperationStatus.None;
         
-        public static UIOperationStatus BackToPreviousStatus() => UIOperations.Pop();
+        public static UIOperationStatus BackToPreviousStatus()
+        {
+            var oldStatus = UIOperations.Pop();
+            var newStatus = GetCurrentStatus();
+            UIStatusChangeEvent.Invoke(oldStatus, newStatus);
+            return newStatus;
+        }
 
         public static bool PopStatusIfEqual(UIOperationStatus status)
         {
             if (UIOperations.Peek() == status)
             {
-                UIOperations.Pop(); return true;
+                BackToPreviousStatus(); return true;
             }
             return false;
         }
