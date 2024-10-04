@@ -36,9 +36,7 @@ namespace TowerDefenseDemo.UI
 
         protected virtual void Awake()
         {
-
-                GameplayUITracker.UIStatusChangeEvent.AddListener(OnUIStatusChange);
-
+            GameplayUITracker.UIStatusChangeEvent.AddListener(OnUIStatusChange);
         }
 
         protected virtual void OnDestroy()
@@ -69,14 +67,14 @@ namespace TowerDefenseDemo.UI
         public virtual void InCompleteCallback()
         {
             isOpened = true;
-            if (finalIsOpened != isOpened) { PlayOut(); }
+            if ( finalIsOpened != isOpened ) { PlayOut(); } // Continue to animate because this state is not what we wanted
             else { isAnimationPlaying = false; }
         }
 
         public virtual void OutCompleteCallback()
         {
             isOpened = false;
-            if (finalIsOpened != isOpened) { PlayIn(); }
+            if ( finalIsOpened != isOpened ) { PlayIn(); }
             else { isAnimationPlaying = false; }
         }
     }

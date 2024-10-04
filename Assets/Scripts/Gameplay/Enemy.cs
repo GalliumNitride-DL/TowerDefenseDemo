@@ -58,12 +58,14 @@ namespace TowerDefenseDemo.Gameplay
         {
             EvaluatePosition(0f);
             GlobalData.AliveEnemyCount++;
+            GameController.Instance.StateChangeEvent.AddListener(OnGameStateChange);
         }
 
         private void OnDisable()
         {
             GlobalData.AliveEnemyCount--;
             GlobalData.Money += reward;
+            GameController.Instance?.StateChangeEvent.RemoveListener(OnGameStateChange);
         }
 
         private void Update()

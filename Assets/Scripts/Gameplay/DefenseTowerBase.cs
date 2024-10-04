@@ -64,7 +64,7 @@ namespace TowerDefenseDemo.Gameplay
 
         protected virtual void OnDisable()
         {
-            GameController.Instance.StateChangeEvent.RemoveListener(OnGameStateChange);
+            GameController.Instance?.StateChangeEvent.RemoveListener(OnGameStateChange);
         }
 
         protected abstract void Attack();

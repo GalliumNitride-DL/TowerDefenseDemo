@@ -28,6 +28,24 @@ MonoBehaviour:
       spawnDelay: 1
       spawnCount: 50
       spawnInterval: 0.5
+  - subWaves:
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 2
+      spawnCount: 100
+      spawnInterval: 0.1
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 10
+      spawnInterval: 0.5
+  - subWaves:
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 2
+      spawnCount: 10
+      spawnInterval: 0.1
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 10
+      spawnInterval: 0.5
   startMoney: 10000
   emptyTile: {fileID: 4449136731150680589, guid: 70ca78efcda817b4185df3f65ae2eeda, type: 3}
   spawnPointTile: {fileID: 0}
