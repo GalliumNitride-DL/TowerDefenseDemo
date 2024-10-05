@@ -50,7 +50,7 @@ MonoBehaviour:
   speed: 1
   hitPoints: 15
   height: 8
-  reward: 0
+  reward: 4
   immuneDamageType: 0
   OnDie:
     m_PersistentCalls:
