@@ -36,7 +36,7 @@ namespace TowerDefenseDemo.Gameplay
         public void TryUpdateDeployStatus(GameObject towerPrefab)
         {
             if (GameController.Instance.State != GameState.Deploying) { return; }
-            if (UIStatus == UIOperationStatus.DeployTower && currentlyDeployingPrefab == towerPrefab)
+            if (UIStatus == UIOperationStatus.DeployTower)
             {
                 Destroy(currentlyDeployingPrefab);
                 currentlyDeployingPrefab = null;
@@ -105,7 +105,7 @@ namespace TowerDefenseDemo.Gameplay
         {
             if (UIStatus != UIOperationStatus.SelectTower) { return; }
 
-            rangeText.text = currentlySelectedTower.range.ToString();
+            rangeText.text = (currentlySelectedTower.range / 10f).ToString();
             DPSText.text = currentlySelectedTower.GetDPS().ToString();
             sellButtonText.text = $"Sell for ${currentlySelectedTower.price / 2}";
         }
