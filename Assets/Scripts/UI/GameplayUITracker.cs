@@ -10,9 +10,9 @@ namespace TowerDefenseDemo.UI
         DeployIdle,
         DeployTower,
         SelectTower,
-        ConfirmUpgrade,
         ConfirmSell,
         Pause,
+        Complete
     }
 
     public static class GameplayUITracker

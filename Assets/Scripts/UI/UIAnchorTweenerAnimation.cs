@@ -18,8 +18,8 @@ namespace TowerDefenseDemo.UI
             rectTransform = GetComponent<RectTransform>();
         }
         
-        public override void PlayIn() => rectTransform.DOAnchorPos3D(openPos, duration).SetEase(inCurve).OnComplete(InCompleteCallback);
+        public override void PlayIn() => rectTransform.DOAnchorPos3D(openPos, duration).SetEase(inCurve).SetUpdate(true).OnComplete(InCompleteCallback);
 
-        public override void PlayOut() => rectTransform.DOAnchorPos3D(closePos, duration).SetEase(outCurve).OnComplete(OutCompleteCallback);
+        public override void PlayOut() => rectTransform.DOAnchorPos3D(closePos, duration).SetEase(outCurve).SetUpdate(true).OnComplete(OutCompleteCallback);
     }
 }

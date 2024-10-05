@@ -1,10 +1,12 @@
+using DG.Tweening;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace TowerDefenseDemo.Gameplay
 {
-    public class CameraController : MonoBehaviour
+    public class CameraController : SingletonBehaviour<CameraController>
     {
         [SerializeField] private Transform arm;
         [SerializeField] private Vector3 referenceRotation;
@@ -13,35 +15,48 @@ namespace TowerDefenseDemo.Gameplay
         [SerializeField] [Range(0, 90)] private float maxDeviateAngleHeight;
         [SerializeField] private float smoothTime;
         [SerializeField] private float distance;
+        [SerializeField] private float gameOverDistance;
+        [SerializeField] private float gameOverAnimTime;
 
         private Vector3 targetRotation;
         private Vector4 currentVelocity;
 
-        private void OnEnable()
+        private Vector3 followPos;
+
+        private void Start()
         {
             GameController.Instance.StateChangeEvent.AddListener(OnGameStateChange);
+            var segments = GlobalData.CurrentLevelData.enemyRoadSegments;
+            followPos = new Vector3(segments[segments.Count - 1].x, 0f, segments[segments.Count - 1].y) * GlobalData.BlockLength;
         }
 
         private void Update()
         {
-            if (GameController.Instance.State == GameState.Deploying || GameController.Instance.State == GameState.AFK)
+            switch (GameController.Instance.State)
             {
-                transform.localPosition = Vector3.back * distance;
-                if (GameController.Instance.State == GameState.AFK)
-                {
-                    var mousePos = Input.mousePosition;
-                    var y = (mousePos.x / Screen.width) * maxDeviateAngleWidth;
-                    var x = - (mousePos.y / Screen.height) * maxDeviateAngleHeight;
-                    targetRotation = referenceRotation + new Vector3(x, y, 0f);
-                }
-                arm.localRotation = QuaternionUtil.SmoothDamp(arm.localRotation, Quaternion.Euler(targetRotation), ref currentVelocity, smoothTime);
+                case GameState.AFK:
+                case GameState.Deploying:
+                case GameState.LevelCompleted:
+                case GameState.LevelFailed:
+                    transform.localPosition = Vector3.back * distance;
+                    if (GameController.Instance.State != GameState.Deploying)
+                    {
+                        var mousePos = Input.mousePosition;
+                        var y = (mousePos.x / Screen.width) * maxDeviateAngleWidth;
+                        var x = - (mousePos.y / Screen.height) * maxDeviateAngleHeight;
+                        targetRotation = referenceRotation + new Vector3(x, y, 0f);
+                    }
+                    arm.localRotation = QuaternionUtil.SmoothDamp(arm.localRotation, Quaternion.Euler(targetRotation), ref currentVelocity, smoothTime);
+                    break;
             }
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             GameController.Instance?.StateChangeEvent.RemoveListener(OnGameStateChange);
         }
+
+        public void SetFollowPos(Vector3 v) => followPos = v;
 
         private void OnGameStateChange(GameState newState)
         {
@@ -53,6 +68,12 @@ namespace TowerDefenseDemo.Gameplay
                 case GameState.AFK:
                     targetRotation = referenceRotation;
                     break;
+                case GameState.LevelFailed:
+                case GameState.LevelCompleted:
+                    arm.transform.DOLocalMove(followPos, gameOverAnimTime).SetUpdate(true);
+                    DOTween.To(() => distance, v => distance = v, gameOverDistance, gameOverAnimTime).SetUpdate(true);
+                    break;
+                
             }
         }
     }

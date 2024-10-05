@@ -39,18 +39,34 @@ namespace TowerDefenseDemo.Gameplay
             }
 
             var c = segments[currentSegmentIndex] + (Vector2)dx * (currentSegmentTime / t);
+            
+            if (currentSegmentIndex == segments.Count - 1)
+            {
+                GameController.Instance.GameLost(this);
+            }
 
             transform.position = new(c.x * GlobalData.BlockLength, height, c.y * GlobalData.BlockLength);
         }
 
         public void TakeDamage(int damage, DamageType damageType)
         {
-            if (damageType == immuneDamageType || damageType == DamageType.Decoy) { return; }
+            if (hitPoints == 0 || damageType == immuneDamageType || damageType == DamageType.Decoy) { return; }
             hitPoints = Mathf.Max(0, hitPoints - damage);
             if (hitPoints == 0)
             {
                 OnDie.Invoke(this);
-                Destroy(gameObject, 0.1f);
+
+                GlobalData.AliveEnemyCount--;
+                GlobalData.Money += reward;
+                if (EnemySpawner.Instance.State == SpawnState.SpawnComplete && GlobalData.AliveEnemyCount == 0)
+                {
+                    GameController.Instance.OnLastEnemyDieCall(this);
+                }
+                
+                if (GameController.Instance.State != GameState.LevelFailed && GameController.Instance.State != GameState.LevelCompleted)
+                {
+                    Destroy(gameObject, 0.1f);
+                }
             }
         }
 
@@ -63,8 +79,6 @@ namespace TowerDefenseDemo.Gameplay
 
         private void OnDisable()
         {
-            GlobalData.AliveEnemyCount--;
-            GlobalData.Money += reward;
             GameController.Instance?.StateChangeEvent.RemoveListener(OnGameStateChange);
         }
 
@@ -81,8 +95,11 @@ namespace TowerDefenseDemo.Gameplay
             switch (newState)
             {
                 case GameState.LevelFailed:
+                    OnDie.RemoveAllListeners();
+                    break;
                 case GameState.LevelCompleted:
                     OnDie.RemoveAllListeners();
+                    Destroy(gameObject, 5f);
                     break;
             }
         }

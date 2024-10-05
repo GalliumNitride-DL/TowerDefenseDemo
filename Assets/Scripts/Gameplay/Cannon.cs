@@ -35,7 +35,7 @@ namespace TowerDefenseDemo.Gameplay
             var t = 0f;
             var enemy = lockedEnemy;
             bullet.SetActive(true);
-            while (enemy && t < bulletFlyTime && GameController.Instance.State == GameState.AFK)
+            while (enemy && t < bulletFlyTime && (GameController.Instance.State == GameState.AFK || GameController.Instance.State == GameState.Paused))
             {
                 var d = Time.deltaTime / (bulletFlyTime - t);
                 bullet.transform.position = Vector3.Lerp(bullet.transform.position, enemy.transform.position, d);
@@ -43,12 +43,17 @@ namespace TowerDefenseDemo.Gameplay
                 artillery.transform.LookAt(enemy.transform, Vector3.up);
                 await UniTask.Yield();
             }
-            if (enemy && t >= bulletFlyTime)
+            
+            await UniTask.WaitForFixedUpdate(); // To prevent null reference
+            if (enemy && t >= bulletFlyTime && (GameController.Instance.State == GameState.AFK || GameController.Instance.State == GameState.Paused))
             {
                 enemy.TakeDamage(bulletDamage, damageType);
             }
-            bullet.SetActive(false);
-            bullet.transform.localPosition = bulletOriginalPos;
+            if (GameController.Instance.State == GameState.AFK || GameController.Instance.State == GameState.Deploying)
+            {
+                bullet.SetActive(false);
+                bullet.transform.localPosition = bulletOriginalPos;
+            }
         }
     }
 }

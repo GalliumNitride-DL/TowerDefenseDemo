@@ -8,7 +8,6 @@ namespace TowerDefenseDemo.Gameplay
     {
         Decoy,
         Spell,
-        Fire,
         Impact
     }
 }

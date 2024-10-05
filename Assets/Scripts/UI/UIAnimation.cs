@@ -33,10 +33,12 @@ namespace TowerDefenseDemo.UI
         private bool isAnimationPlaying;
         public bool isManualTrigger => triggerCondition.Count == 0;
         [SerializeField] private List<UIStatusChangeTrigger> triggerCondition = new();
+        [SerializeField] private bool initialIsOpen = false;
 
         protected virtual void Awake()
         {
             GameplayUITracker.UIStatusChangeEvent.AddListener(OnUIStatusChange);
+            isOpened = initialIsOpen;
         }
 
         protected virtual void OnDestroy()
@@ -51,12 +53,12 @@ namespace TowerDefenseDemo.UI
                 if (condition == (oldStatus, newStatus))
                 {
                     finalIsOpened = true;
-                    if (!isAnimationPlaying) { isAnimationPlaying = true; PlayIn(); }
+                    if (!isAnimationPlaying && isOpened != finalIsOpened) { isAnimationPlaying = true; PlayIn(); }
                 }
                 else if (condition == (newStatus, oldStatus))
                 {
                     finalIsOpened = false;
-                    if (!isAnimationPlaying) { isAnimationPlaying = true; PlayOut(); }
+                    if (!isAnimationPlaying && isOpened != finalIsOpened) { isAnimationPlaying = true; PlayOut(); }
                 }
             }
         }

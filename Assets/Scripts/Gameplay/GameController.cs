@@ -1,3 +1,7 @@
+using Cysharp.Threading.Tasks;
+
+using DG.Tweening;
+
 using System.Collections;
 using System.Collections.Generic;
 
@@ -47,6 +51,55 @@ namespace TowerDefenseDemo.Gameplay
             EnemySpawner.Instance.StartSpawn();
         }
 
+        public void OnLastEnemyDieCall(Enemy enemy) //change game state
+        {
+            if (state == GameState.AFK)
+            {
+                if (currentWaveIndex == GlobalData.CurrentLevelData.waveInfos.Count - 1)
+                {
+                    if (Time.timeScale != 1) { TimeScaleFadeIn(); }
+                    CameraController.Instance.SetFollowPos(enemy.transform.position);
+                    ChangeGameState(GameState.LevelCompleted);
+                    GameplayUITracker.PushStatus(UIOperationStatus.Complete);
+                }
+                else
+                {
+                    currentWaveIndex++;
+                    ChangeGameState(GameState.Deploying);
+                    GameplayUITracker.PushStatus(UIOperationStatus.DeployIdle);
+                }
+            }
+        }
+
+        public void GameLost(Enemy enemy)
+        {
+            if (state == GameState.AFK)
+            {
+                if (Time.timeScale != 1) { TimeScaleFadeIn(); }
+                ChangeGameState(GameState.LevelFailed);
+                GameplayUITracker.PushStatus(UIOperationStatus.Complete);
+            }
+        }
+
+        public async UniTaskVoid Pause()
+        {
+            if (state != GameState.AFK) { return; }
+            await TimeScaleFadeOut().AsyncWaitForCompletion();
+            if (state == GameState.AFK)
+            {
+                ChangeGameState(GameState.Paused);
+                GameplayUITracker.PushStatus(UIOperationStatus.Pause);
+            }
+        }
+
+        public void Resume()
+        {
+            if (state != GameState.Paused) { return; }
+            ChangeGameState(GameState.AFK);
+            GameplayUITracker.BackToPreviousStatus();
+            TimeScaleFadeIn();
+        }
+
         protected async override void Awake()
         {
             base.Awake();
@@ -61,25 +114,14 @@ namespace TowerDefenseDemo.Gameplay
             GameplayUITracker.PushStatus(UIOperationStatus.DeployIdle);
         }
 
+        private Tweener TimeScaleFadeIn() => DOTween.To(() => Time.timeScale, v => Time.timeScale = v, 1f, 0.75f).SetUpdate(true);
+
+        private Tweener TimeScaleFadeOut() => DOTween.To(() => Time.timeScale, v => Time.timeScale = v, 0f, 0.75f).SetUpdate(true);
+
+
         private void Update()
         {
-            if (state == GameState.AFK) //Try to change game state
-            {
-                if (EnemySpawner.Instance.State == SpawnState.SpawnComplete && GlobalData.AliveEnemyCount == 0)
-                {
-                    if (currentWaveIndex == GlobalData.CurrentLevelData.waveInfos.Count - 1)
-                    {
-                        ChangeGameState(GameState.LevelCompleted);
-                    }
-                    else
-                    {
-                        currentWaveIndex++;
-                        ChangeGameState(GameState.Deploying);
-                        GameplayUITracker.PushStatus(UIOperationStatus.DeployIdle);
-                    }
-                }
-            }
-            Debug.Log(GlobalData.Money);
+            Debug.Log(GlobalData.AliveEnemyCount);
         }
 
         private void OnDestroy()

@@ -38,7 +38,7 @@ public static class QuaternionUtil
 	
 	public static Quaternion SmoothDamp(Quaternion rot, Quaternion target, ref Vector4 deriv, float time)
     {
-		if (Time.deltaTime < Mathf.Epsilon) return rot;
+		//if (Time.deltaTime < Mathf.Epsilon) return rot;
 		// account for double-cover
 		var Dot = Quaternion.Dot(rot, target);
 		var Multi = Dot > 0f ? 1f : -1f;
