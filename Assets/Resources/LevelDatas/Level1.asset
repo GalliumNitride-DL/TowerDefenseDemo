@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a0629ccfb0a58c478d29e2efe88bdf2, type: 3}
+  m_Name: Level1
+  m_EditorClassIdentifier: 
+  enemyRoadSegments:
+  - {x: 1, y: 1}
+  - {x: 1, y: 5}
+  - {x: 3, y: 5}
+  - {x: 3, y: 7}
+  - {x: 6, y: 7}
+  - {x: 6, y: 2}
+  - {x: 14, y: 2}
+  - {x: 14, y: 17}
+  waveInfos:
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 25
+      spawnInterval: 0.5
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 4
+      spawnCount: 50
+      spawnInterval: 0.7
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 6
+      spawnCount: 10
+      spawnInterval: 0.5
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 1
+      spawnCount: 100
+      spawnInterval: 0.2
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 6
+      spawnCount: 100
+      spawnInterval: 0.25
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 1
+      spawnCount: 20
+      spawnInterval: 0.2
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 2
+      spawnCount: 55
+      spawnInterval: 0.12
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 1
+      spawnCount: 250
+      spawnInterval: 0.1
+  startMoney: 1000
+  emptyTile: {fileID: 4449136731150680589, guid: 70ca78efcda817b4185df3f65ae2eeda, type: 3}
+  spawnPointTile: {fileID: 1762478652813296987, guid: bdaceaf0451533242acbb9cf932ac188, type: 3}
+  HeadquartersTile: {fileID: 3671056985655997563, guid: 0191cf5789b437043b9f19f1d1c13263, type: 3}

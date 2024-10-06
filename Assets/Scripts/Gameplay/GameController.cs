@@ -32,7 +32,7 @@ namespace TowerDefenseDemo.Gameplay
         private GameState state = GameState.WaitingStart;
         [HideInInspector] public UnityEvent<GameState> StateChangeEvent = new();
 
-        public LevelData currentLevelData;
+        //public LevelData currentLevelData;
         public int currentWaveIndex { get; private set; } = 0;
 
         private void ChangeGameState(GameState newState)
@@ -103,7 +103,7 @@ namespace TowerDefenseDemo.Gameplay
         protected async override void Awake()
         {
             base.Awake();
-            GlobalData.CurrentLevelData = currentLevelData;
+            var currentLevelData = GlobalData.CurrentLevelData;
             GlobalData.Money = currentLevelData.startMoney;
             GameplayUITracker.ClearHistory();
             
@@ -126,7 +126,7 @@ namespace TowerDefenseDemo.Gameplay
 
         private void OnDestroy()
         {
-            GlobalData.CurrentLevelData = null;
+            //GlobalData.CurrentLevelData = null;
             GameplayUITracker.ClearHistory();
         }
     }

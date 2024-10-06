@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a0629ccfb0a58c478d29e2efe88bdf2, type: 3}
+  m_Name: Level2
+  m_EditorClassIdentifier: 
+  enemyRoadSegments:
+  - {x: 0, y: 0}
+  - {x: 19, y: 0}
+  - {x: 19, y: 19}
+  - {x: 4, y: 19}
+  - {x: 4, y: 4}
+  - {x: 15, y: 4}
+  - {x: 15, y: 15}
+  - {x: 8, y: 15}
+  - {x: 8, y: 8}
+  - {x: 11, y: 8}
+  - {x: 11, y: 11}
+  waveInfos:
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 5
+      spawnInterval: 1
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 1
+      spawnCount: 10
+      spawnInterval: 0.5
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 8
+      spawnCount: 10
+      spawnInterval: 0.5
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 10
+      spawnInterval: 0.7
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 1
+      spawnCount: 2
+      spawnInterval: 1
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 8
+      spawnCount: 100
+      spawnInterval: 0.05
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 2
+      spawnInterval: 0.7
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 1
+      spawnCount: 2
+      spawnInterval: 1
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 8
+      spawnCount: 100
+      spawnInterval: 0.1
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 30
+      spawnInterval: 0.7
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 5
+      spawnCount: 50
+      spawnInterval: 0.3
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 10
+      spawnInterval: 0.2
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 2
+      spawnCount: 100
+      spawnInterval: 0.2
+  - subWaves:
+    - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
+      spawnDelay: 1
+      spawnCount: 100
+      spawnInterval: 0.2
+    - enemyPrefab: {fileID: 5020361358620316037, guid: 84c3afc4c2f619a49b897fc7f3058a27, type: 3}
+      spawnDelay: 1
+      spawnCount: 400
+      spawnInterval: 0.05
+  startMoney: 750
+  emptyTile: {fileID: 4449136731150680589, guid: 70ca78efcda817b4185df3f65ae2eeda, type: 3}
+  spawnPointTile: {fileID: 1762478652813296987, guid: bdaceaf0451533242acbb9cf932ac188, type: 3}
+  HeadquartersTile: {fileID: 3671056985655997563, guid: 0191cf5789b437043b9f19f1d1c13263, type: 3}

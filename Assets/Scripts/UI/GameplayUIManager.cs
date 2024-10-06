@@ -6,6 +6,7 @@ using TMPro;
 using TowerDefenseDemo.Gameplay;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace TowerDefenseDemo.UI
 {
@@ -61,6 +62,10 @@ namespace TowerDefenseDemo.UI
         public void Pause() => GameController.Instance.Pause().Forget();
 
         public void Resume() => GameController.Instance.Resume();
+
+        public void Back() => SceneManager.LoadScene("MainMenu");
+        
+        public void Restart() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
 #endregion
     }

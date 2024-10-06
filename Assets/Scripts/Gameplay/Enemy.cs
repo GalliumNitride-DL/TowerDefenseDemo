@@ -21,7 +21,7 @@ namespace TowerDefenseDemo.Gameplay
 
         private void EvaluatePosition(float dt)
         {
-            var segments = GameController.Instance.currentLevelData.enemyRoadSegments;
+            var segments = GlobalData.CurrentLevelData.enemyRoadSegments;
             currentSegmentTime += dt;
 
             var dx = currentSegmentIndex == segments.Count - 1 ? Vector2Int.zero : segments[currentSegmentIndex + 1] - segments[currentSegmentIndex];
