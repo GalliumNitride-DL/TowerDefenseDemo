@@ -126,7 +126,7 @@ namespace TowerDefenseDemo.Gameplay
 
         private void OnDestroy()
         {
-            //GlobalData.CurrentLevelData = null;
+            Time.timeScale = 1f;
             GameplayUITracker.ClearHistory();
         }
     }
