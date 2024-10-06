@@ -44,9 +44,9 @@ MonoBehaviour:
       spawnInterval: 0.1
     - enemyPrefab: {fileID: 99256573566040278, guid: 9922cff98f0342745b97b33c78095966, type: 3}
       spawnDelay: 1
-      spawnCount: 10
-      spawnInterval: 0.5
+      spawnCount: 50
+      spawnInterval: 0.25
   startMoney: 600
   emptyTile: {fileID: 4449136731150680589, guid: 70ca78efcda817b4185df3f65ae2eeda, type: 3}
-  spawnPointTile: {fileID: 0}
-  HeadquartersTile: {fileID: 0}
+  spawnPointTile: {fileID: 1762478652813296987, guid: bdaceaf0451533242acbb9cf932ac188, type: 3}
+  HeadquartersTile: {fileID: 3671056985655997563, guid: 0191cf5789b437043b9f19f1d1c13263, type: 3}

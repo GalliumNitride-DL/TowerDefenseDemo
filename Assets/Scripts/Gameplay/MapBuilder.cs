@@ -47,17 +47,30 @@ namespace TowerDefenseDemo.Gameplay
             {
                 for (int j = 0; j < MapLength; j++)
                 {
+                    GameObject tile;
                     if (!isRoadFlag[i, j])
                     {
-                        var tile = levelData.emptyTile;
-                        var p = new Vector3(i * GlobalData.BlockLength, tile.transform.localScale.y / 2, j * GlobalData.BlockLength);
-                        var tileObject = GameObject.Instantiate(tile, p, Quaternion.identity, parent);
+                        tile = levelData.emptyTile;
                     }
+                    else if (i == segments[0].x && j == segments[0].y)
+                    {
+                        tile = levelData.spawnPointTile;
+                    }
+                    else if (i == segments[segments.Count - 1].x && j == segments[segments.Count - 1].y)
+                    {
+                        tile = levelData.HeadquartersTile;
+                    }
+                    else continue;
+                    var p = new Vector3(i * GlobalData.BlockLength, tile.transform.localScale.y / 2, j * GlobalData.BlockLength);
+                    var tileObject = GameObject.Instantiate(tile, p, Quaternion.identity, parent);
+
+                    var s = tileObject.transform.localScale;
+                    tileObject.transform.localScale = Vector3.zero;
+                    tileObject.transform.DOScale(s, AnimDuration);
+
+                    await UniTask.Delay(1);
                 }
             }
-
-            parent.localScale = new(1f, 0f, 1f);
-            await parent.DOScaleY(1f, AnimDuration).AsyncWaitForCompletion();
         }
 
         public static bool CanDeployTowerAt(Vector2Int c) => c.x < MapLength && c.y < MapLength && !isRoadFlag[c.x, c.y] && !towers.ContainsKey(c);
