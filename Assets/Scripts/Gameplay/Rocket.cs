@@ -61,13 +61,13 @@ namespace TowerDefenseDemo.Gameplay
                 {
                     break;
                 }
-                else await UniTask.Yield();
+                else await UniTask.WaitForFixedUpdate();
             }
 
-            await UniTask.WaitForFixedUpdate();
             if (lockedEnemy && (GameController.Instance.State == GameState.AFK || GameController.Instance.State == GameState.Paused))
             {
                 IndicatorPulse();
+                CameraController.Instance.ShakeCamera(1f, 1f);
 
                 Physics.OverlapSphereNonAlloc(rocket.transform.position, rocketRange, results, -1, QueryTriggerInteraction.Ignore);
                 foreach (var result in results)

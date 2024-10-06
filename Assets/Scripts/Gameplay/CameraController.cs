@@ -58,6 +58,19 @@ namespace TowerDefenseDemo.Gameplay
 
         public void SetFollowPos(Vector3 v) => followPos = v;
 
+        public void ShakeCamera(float quake, float duration)
+        {
+            var deltaPos = Vector3.zero;
+
+            DOTween.To(() => quake, q =>
+            {
+                quake = q;
+                transform.position -= deltaPos;
+                deltaPos = Random.insideUnitSphere * quake;
+                transform.position += deltaPos;
+            }, 0f, duration).SetUpdate(UpdateType.Late).OnComplete(() => transform.position -= deltaPos);
+        }
+
         private void OnGameStateChange(GameState newState)
         {
             switch (newState)
